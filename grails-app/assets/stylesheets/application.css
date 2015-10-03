@@ -11,3 +11,17 @@
 *= require mobile
 *= require_self
 */
+.navbar {
+    background-color: #ABBF78;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+@media (min-width: 600px) {
+    h1 {
+        font-size: 3vw;
+        font-weight: 100;
+    }
+}

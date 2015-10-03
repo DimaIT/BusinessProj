@@ -10,6 +10,16 @@ class User {
         password(blank:false, password:true)
         role(inList:["admin", "user"])
     }
+
+    static transients = ['admin']
+    boolean isAdmin(){
+        return role == "admin"
+    }
+
+    static mapping = {
+        table 'user_table'
+    }
+
     @Override
     String toString(){
         login
