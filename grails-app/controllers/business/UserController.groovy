@@ -1,38 +1,55 @@
 package business
 
-import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
+
+import static org.springframework.http.HttpStatus.*
 
 @Transactional(readOnly = true)
 class UserController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [authenticate: "POST", save: "POST", update: "PUT", delete: "DELETE"]
 
     def login = {
 
     }
     def logout = {
-
+        session.user = null
+        redirect(action: "login")
     }
-    def authenticate = {
 
+    def authenticate = {
+        def user = User.findByLoginAndPassword(params.login, params.password)
+
+        if (user) {
+            session.user = user
+            flash.message = "Hello ${user.login}!"
+            redirect(controller: "business", action: "index")
+        } else {
+            flash.message = "Sorry, ${params.login}. Please try again."
+            redirect(action: "login")
+        }
     }
 
     def index(Integer max) {
+        admAction()
         params.max = Math.min(max ?: 10, 100)
-        respond User.list(params), model:[userCount: User.count()]
+        respond User.list(params), model: [userCount: User.count()]
     }
 
     def show(User user) {
+        admAction()
         respond user
     }
 
     def create() {
+        admAction()
         respond new User(params)
+
     }
 
     @Transactional
     def save(User user) {
+        admAction()
         if (user == null) {
             transactionStatus.setRollbackOnly()
             notFound()
@@ -41,11 +58,11 @@ class UserController {
 
         if (user.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond user.errors, view:'create'
+            respond user.errors, view: 'create'
             return
         }
 
-        user.save flush:true
+        user.save flush: true
 
         request.withFormat {
             form multipartForm {
@@ -56,7 +73,9 @@ class UserController {
         }
     }
 
+
     def edit(User user) {
+        admAction()
         respond user
     }
 
@@ -70,18 +89,18 @@ class UserController {
 
         if (user.hasErrors()) {
             transactionStatus.setRollbackOnly()
-            respond user.errors, view:'edit'
+            respond user.errors, view: 'edit'
             return
         }
 
-        user.save flush:true
+        user.save flush: true
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'user.label', default: 'User'), user.id])
                 redirect user
             }
-            '*'{ respond user, [status: OK] }
+            '*' { respond user, [status: OK] }
         }
     }
 
@@ -94,14 +113,14 @@ class UserController {
             return
         }
 
-        user.delete flush:true
+        user.delete flush: true
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'user.label', default: 'User'), user.id])
-                redirect action:"index", method:"GET"
+                redirect action: "index", method: "GET"
             }
-            '*'{ render status: NO_CONTENT }
+            '*' { render status: NO_CONTENT }
         }
     }
 
@@ -111,7 +130,13 @@ class UserController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'user.label', default: 'User'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
     }
+
+    protected void admAction() {
+        if (!session?.user?.admin)
+            redirect(action: "login")
+    }
+
 }

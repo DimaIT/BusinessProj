@@ -14,32 +14,31 @@
             <div class="message">${flash.message}</div>
         </g:if>
         <fieldset class="col-sm-6 col-sm-offset-3">
-        <h1>Login</h1>
-                <table>
-                    <tbody>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="login">Login:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="text"
-                                   id="login" name="login"/>
-                        </td>
-                    </tr>
-                    <tr class="prop">
-                        <td valign="top" class="name">
-                            <label for="password">Password:</label>
-                        </td>
-                        <td valign="top">
-                            <input type="password"
-                                   id="password" name="password"/>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h1>Login</h1>
+            <table>
+                <tbody>
+                <tr class="prop">
+                    <td valign="top" class="name">
+                        <label for="login">Login:</label>
+                    </td>
+                    <td valign="top">
+                        <input type="text"
+                               id="login" name="login"/>
+                    </td>
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name">
+                        <label for="password">Password:</label>
+                    </td>
+                    <td valign="top">
+                        <input type="password"
+                               id="password" name="password"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-            <input class="col-sm-6 col-sm-offset-3 btn-lg btn-info" type="submit" value="Login"/>
+            <input class="col-sm-12 btn-lg btn-info" type="submit" value="Login"/>
         </fieldset>
     </g:form>
 </div>
