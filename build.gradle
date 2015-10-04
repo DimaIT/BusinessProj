@@ -58,6 +58,7 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
+    compile 'org.apache.commons:commons-csv:1.2'
     compile 'postgresql:postgresql:9.1-901-1.jdbc4'
 
     compile "org.grails.plugins:hibernate"

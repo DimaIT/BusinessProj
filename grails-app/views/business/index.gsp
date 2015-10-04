@@ -11,6 +11,11 @@
             <ul>
                 <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
                 <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+                <li>
+                    <g:form action="loadFromCSV" method="POST">
+                            <input class="btn-block" type="submit" value="Load From CSV"/>
+                    </g:form>
+                </li>
             </ul>
         </div>
         <div id="list-business" class="content scaffold-list" role="main">

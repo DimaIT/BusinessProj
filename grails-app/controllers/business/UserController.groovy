@@ -7,17 +7,9 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class UserController {
 
-    def beforeInterceptor = [action: this.&auth, except: ['login', 'logout', 'authenticate']]
-
-    public def auth() {
-        if (!session.user) {
-            redirect(action: "login")
-            return false
-        }
-    }
+    def beforeInterceptor = [action: this.&authAdm, except: ['login', 'logout', 'authenticate']]
 
     public def authAdm() {
-        auth()
         if (!session?.user?.admin) {
             redirect(controller: "business", action: "index")
             return false

@@ -1,12 +1,15 @@
 package business
 
-import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
+
+import static org.springframework.http.HttpStatus.*
 
 @Transactional(readOnly = true)
 class BusinessController {
 
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    BusinessParserService businessParserService
+
+    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE", loadFromCSV: "POST"]
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -23,6 +26,12 @@ class BusinessController {
 
     def edit(Business business) {
         respond business
+    }
+
+    @Transactional
+    def loadFromCSV() {
+        businessParserService.test()
+        redirect action:"index", method:"GET"
     }
 
     @Transactional

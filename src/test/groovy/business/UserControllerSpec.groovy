@@ -1,7 +1,8 @@
 package business
 
-import grails.test.mixin.*
-import spock.lang.*
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 @TestFor(UserController)
 @Mock(User)
@@ -11,8 +12,10 @@ class UserControllerSpec extends Specification {
         assert params != null
 
         // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
-        assert false, "TODO: Provide a populateValidParams() implementation for this generated test suite"
+        params["name"] = 'someValidName'
+        params["email"] = 'someValidEmail'
+        params["street"] = 'someValidStreet'
+        params["zip"] = 'someValidZip'
     }
 
     void "Test the index action returns the correct model"() {
