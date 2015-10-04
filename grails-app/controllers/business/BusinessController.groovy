@@ -30,7 +30,15 @@ class BusinessController {
 
     @Transactional
     def loadFromCSV() {
-        businessParserService.test()
+        def file = request.getFile("0")
+        if(file?.empty) {
+            flash.message = "File cannot be empty"
+        } else {
+            def reader = new InputStreamReader(file.inputStream);
+            def list = businessParserService.parse(reader)
+            businessParserService.save(list)
+            println("all good")
+        }
         redirect action:"index", method:"GET"
     }
 
