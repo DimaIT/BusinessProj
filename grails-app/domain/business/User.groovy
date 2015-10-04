@@ -20,6 +20,10 @@ class User {
         table 'user_table'
     }
 
+    def beforeInsert = {
+        password = password.encodeAsSHA()
+    }
+
     @Override
     String toString(){
         login

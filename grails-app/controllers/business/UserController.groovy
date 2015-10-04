@@ -7,18 +7,37 @@ import static org.springframework.http.HttpStatus.*
 @Transactional(readOnly = true)
 class UserController {
 
+    def beforeInterceptor = [action: this.&auth, except: ['login', 'logout', 'authenticate']]
+
+    public def auth() {
+        if (!session.user) {
+            redirect(action: "login")
+            return false
+        }
+    }
+
+    public def authAdm() {
+        auth()
+        if (!session?.user?.admin) {
+            redirect(controller: "business", action: "index")
+            return false
+        }
+
+    }
+
     static allowedMethods = [authenticate: "POST", save: "POST", update: "PUT", delete: "DELETE"]
 
     def login = {
 
     }
+
     def logout = {
         session.user = null
         redirect(action: "login")
     }
 
     def authenticate = {
-        def user = User.findByLoginAndPassword(params.login, params.password)
+        def user = User.findByLoginAndPassword(params.login, params.password.encodeAsSHA())
 
         if (user) {
             session.user = user
@@ -31,25 +50,21 @@ class UserController {
     }
 
     def index(Integer max) {
-        admAction()
         params.max = Math.min(max ?: 10, 100)
         respond User.list(params), model: [userCount: User.count()]
     }
 
     def show(User user) {
-        admAction()
         respond user
     }
 
     def create() {
-        admAction()
         respond new User(params)
 
     }
 
     @Transactional
     def save(User user) {
-        admAction()
         if (user == null) {
             transactionStatus.setRollbackOnly()
             notFound()
@@ -73,9 +88,7 @@ class UserController {
         }
     }
 
-
     def edit(User user) {
-        admAction()
         respond user
     }
 
@@ -133,10 +146,4 @@ class UserController {
             '*' { render status: NOT_FOUND }
         }
     }
-
-    protected void admAction() {
-        if (!session?.user?.admin)
-            redirect(action: "login")
-    }
-
 }
